@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="JPrinter3D" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>Calculadora JPrinter3D</title>
+  <meta name="description" content="Calculadora de precio de venta para impresiones 3D de JPrinter3D." />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icon-180.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png" />
+  <style>
+    :root{
+      --bg:#0f172a;
+      --card:#111827;
+      --soft:#1f2937;
+      --line:#334155;
+      --text:#f8fafc;
+      --muted:#cbd5e1;
+      --accent:#22c55e;
+      --accent2:#38bdf8;
+      --warn:#f59e0b;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+    }
+    *{box-sizing:border-box}
+    html{
+      height:100%;
+      overflow-x:hidden;
+      background:#020617;
+    }
+    body{
+      margin:0;
+      min-height:100dvh;
+      overflow-x:hidden;
+      font-family:Arial, Helvetica, sans-serif;
+      background:linear-gradient(180deg,#020617,#0f172a 40%,#111827);
+      color:var(--text);
+      -webkit-text-size-adjust:100%;
+      padding:var(--safe-top) var(--safe-right) max(8px,var(--safe-bottom)) var(--safe-left);
+    }
+    .wrap{
+      width:min(980px, 100%);
+      margin:0 auto;
+      padding:16px 14px 8px;
+    }
+    h1{
+      font-size:clamp(26px,4vw,40px);
+      margin:6px 0 8px;
+      line-height:1.1;
+    }
+    .sub{
+      color:var(--muted);
+      margin:0 0 18px;
+      line-height:1.5;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:16px;
+      align-items:start;
+    }
+    .card{
+      background:rgba(17,24,39,.95);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+      box-shadow:0 10px 30px rgba(0,0,0,.25);
+      overflow:hidden;
+    }
+    .card h2{
+      margin:0 0 14px;
+      font-size:20px;
+    }
+    .fields{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-width:0;
+    }
+    .field.full{grid-column:1 / -1}
+    label{
+      font-size:14px;
+      color:var(--muted);
+    }
+    input, select{
+      width:100%;
+      background:var(--soft);
+      color:var(--text);
+      border:1px solid #475569;
+      border-radius:12px;
+      padding:12px 13px;
+      font-size:16px;
+      outline:none;
+      appearance:none;
+      -webkit-appearance:none;
+    }
+    input:focus, select:focus{
+      border-color:var(--accent2);
+      box-shadow:0 0 0 3px rgba(56,189,248,.18);
+    }
+    .btns{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    button{
+      border:none;
+      border-radius:12px;
+      padding:12px 16px;
+      font-size:15px;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .primary{background:var(--accent); color:#052e16;}
+    .secondary{background:#e2e8f0; color:#0f172a;}
+    .mini{
+      font-size:13px;
+      color:var(--muted);
+      margin-top:10px;
+      line-height:1.5;
+    }
+    .install{
+      margin-top:12px;
+      padding:12px;
+      border-radius:14px;
+      background:#0b1220;
+      border:1px dashed #475569;
+      color:#e2e8f0;
+      line-height:1.45;
+      font-size:13px;
+    }
+    .results{
+      display:grid;
+      gap:12px;
+    }
+    .kpi{
+      background:linear-gradient(180deg,#0b1220,#111827);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+    }
+    .kpi .t{
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:6px;
+    }
+    .kpi .v{
+      font-size:clamp(24px,4vw,34px);
+      font-weight:800;
+      line-height:1.1;
+      overflow-wrap:anywhere;
+    }
+    .accent .v{color:#86efac}
+    .blue .v{color:#7dd3fc}
+    .warn .v{color:#fcd34d}
+    .list{
+      display:grid;
+      gap:8px;
+      margin-top:8px;
+    }
+    .row{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px 0;
+      border-bottom:1px dashed #334155;
+      font-size:15px;
+    }
+    .row:last-child{border-bottom:none}
+    .muted{color:var(--muted)}
+    .formula{
+      background:#0b1220;
+      border:1px dashed #475569;
+      border-radius:14px;
+      padding:12px;
+      margin-top:12px;
+      color:#e2e8f0;
+      line-height:1.5;
+      font-size:14px;
+    }
+    .pill{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(34,197,94,.12);
+      border:1px solid rgba(34,197,94,.35);
+      color:#bbf7d0;
+      font-size:13px;
+      margin-bottom:8px;
+    }
+    @media (max-width: 800px){
+      .grid{grid-template-columns:1fr}
+      .fields{grid-template-columns:1fr}
+      .wrap{padding:14px 12px 18px}
+      .card{padding:14px}
+      button{flex:1 1 180px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="pill">Bambu Lab A1 • Calculadora móvil</div>
+    <h1>Calculadora de precio de venta 3D</h1>
+    <p class="sub">Hecha para que calcules rápido cuánto debes cobrar por cada impresión, incluyendo material, energía, uso de máquina, extras y una meta de <b>ganancia mínima por rollo</b>.</p>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Datos de la impresión</h2>
+        <div class="fields">
+          <div class="field">
+            <label for="rollPrice">Precio del rollo (COP)</label>
+            <input id="rollPrice" type="number" value="80000" min="0" step="1000" />
+          </div>
+          <div class="field">
+            <label for="rollWeight">Peso del rollo (g)</label>
+            <input id="rollWeight" type="number" value="1000" min="1" step="1" />
+          </div>
+
+          <div class="field">
+            <label for="usedGrams">Material usado por la pieza (g)</label>
+            <input id="usedGrams" type="number" value="120" min="0" step="0.1" />
+          </div>
+          <div class="field">
+            <label for="printHours">Horas de impresión</label>
+            <input id="printHours" type="number" value="6" min="0" step="0.1" />
+          </div>
+
+          <div class="field">
+            <label for="printerPower">Consumo promedio impresora (W)</label>
+            <input id="printerPower" type="number" value="95" min="1" step="1" />
+          </div>
+          <div class="field">
+            <label for="kwhPrice">Valor del kWh (COP)</label>
+            <input id="kwhPrice" type="number" value="1000" min="0" step="1" />
+          </div>
+
+          <div class="field">
+            <label for="machineHour">Cobro por hora de máquina (COP)</label>
+            <input id="machineHour" type="number" value="1000" min="0" step="100" />
+          </div>
+          <div class="field">
+            <label for="extras">Empaque / acabado / otros (COP)</label>
+            <input id="extras" type="number" value="1000" min="0" step="500" />
+          </div>
+
+          <div class="field">
+            <label for="targetProfit">Ganancia mínima por rollo (COP)</label>
+            <input id="targetProfit" type="number" value="350000" min="0" step="1000" />
+          </div>
+          <div class="field">
+            <label for="roundTo">Redondear precio final a</label>
+            <select id="roundTo">
+              <option value="100">100 COP</option>
+              <option value="500" selected>500 COP</option>
+              <option value="1000">1.000 COP</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <label for="customMargin">Ganancia extra adicional (%) opcional</label>
+            <input id="customMargin" type="number" value="0" min="0" step="1" />
+          </div>
+        </div>
+
+        <div class="btns">
+          <button class="primary" onclick="calculate()">Calcular precio</button>
+          <button class="secondary" onclick="resetDefaults()">Restablecer</button>
+        </div>
+
+        <div class="formula" id="formulaBox"></div>
+        <div class="mini">Tip: tu regla de negocio queda integrada así: la app reparte la meta de ganancia del rollo entre los gramos usados de cada pieza. Si tu rollo pesa 1000 g y quieres ganar $350.000 por rollo, cada gramo debe dejar al menos <b>$350 COP de utilidad</b>.</div>
+        <div class="install">Para usarla como app en iPhone una vez publicada: ábrela en <b>Safari</b>, toca <b>Compartir</b> y luego <b>Agregar a pantalla de inicio</b>. Al estar subida a GitHub Pages, iPhone la manejará mejor como acceso directo tipo app.</div>
+      </section>
+
+      <section class="card">
+        <h2>Resultado</h2>
+        <div class="results">
+          <div class="kpi accent">
+            <div class="t">Precio mínimo recomendado</div>
+            <div class="v" id="minPrice">$ 0</div>
+          </div>
+          <div class="kpi blue">
+            <div class="t">Ganancia mínima incluida en esta pieza</div>
+            <div class="v" id="pieceProfit">$ 0</div>
+          </div>
+          <div class="kpi warn">
+            <div class="t">Costo total base de la pieza</div>
+            <div class="v" id="baseCost">$ 0</div>
+          </div>
+        </div>
+
+        <div class="list" id="breakdown"></div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const ids = [
+      'rollPrice','rollWeight','usedGrams','printHours','printerPower','kwhPrice',
+      'machineHour','extras','targetProfit','customMargin','roundTo'
+    ];
+
+    function n(id){
+      const val = parseFloat(document.getElementById(id).value);
+      return Number.isFinite(val) ? val : 0;
+    }
+
+    function money(value){
+      return new Intl.NumberFormat('es-CO', {
+        style:'currency',
+        currency:'COP',
+        maximumFractionDigits:0
+      }).format(value || 0);
+    }
+
+    function ceilTo(value, step){
+      if (!step || step <= 0) return value;
+      return Math.ceil(value / step) * step;
+    }
+
+    function calculate(){
+      const rollPrice = n('rollPrice');
+      const rollWeight = Math.max(n('rollWeight'), 1);
+      const usedGrams = n('usedGrams');
+      const printHours = n('printHours');
+      const printerPower = n('printerPower');
+      const kwhPrice = n('kwhPrice');
+      const machineHour = n('machineHour');
+      const extras = n('extras');
+      const targetProfit = n('targetProfit');
+      const customMargin = n('customMargin');
+      const roundTo = n('roundTo');
+
+      const costPerGram = rollPrice / rollWeight;
+      const materialCost = costPerGram * usedGrams;
+      const energyKwh = (printerPower / 1000) * printHours;
+      const energyCost = energyKwh * kwhPrice;
+      const machineCost = machineHour * printHours;
+      const baseCost = materialCost + energyCost + machineCost + extras;
+
+      const targetProfitPerGram = targetProfit / rollWeight;
+      const pieceMinProfit = targetProfitPerGram * usedGrams;
+
+      let minPrice = baseCost + pieceMinProfit;
+      if (customMargin > 0){
+        minPrice = minPrice * (1 + customMargin / 100);
+      }
+      const roundedPrice = ceilTo(minPrice, roundTo);
+      const effectiveProfit = roundedPrice - baseCost;
+
+      document.getElementById('minPrice').textContent = money(roundedPrice);
+      document.getElementById('pieceProfit').textContent = money(pieceMinProfit);
+      document.getElementById('baseCost').textContent = money(baseCost);
+
+      document.getElementById('breakdown').innerHTML = `
+        <div class="row"><span class="muted">Costo por gramo</span><strong>${money(costPerGram)}</strong></div>
+        <div class="row"><span class="muted">Costo de material</span><strong>${money(materialCost)}</strong></div>
+        <div class="row"><span class="muted">Costo de energía</span><strong>${money(energyCost)}</strong></div>
+        <div class="row"><span class="muted">Uso de máquina</span><strong>${money(machineCost)}</strong></div>
+        <div class="row"><span class="muted">Extras</span><strong>${money(extras)}</strong></div>
+        <div class="row"><span class="muted">Ganancia mínima por gramo</span><strong>${money(targetProfitPerGram)}</strong></div>
+        <div class="row"><span class="muted">Ganancia total final al vender</span><strong>${money(effectiveProfit)}</strong></div>
+      `;
+
+      document.getElementById('formulaBox').innerHTML = `
+        <b>Fórmula usada:</b><br>
+        Precio mínimo = (material + energía + uso de máquina + extras) + ganancia mínima proporcional por gramos usados.<br><br>
+        <b>En esta pieza:</b><br>
+        (${money(materialCost)} + ${money(energyCost)} + ${money(machineCost)} + ${money(extras)}) + ${money(pieceMinProfit)} = <b>${money(minPrice)}</b><br>
+        Precio redondeado sugerido: <b>${money(roundedPrice)}</b>
+      `;
+    }
+
+    function resetDefaults(){
+      const defaults = {
+        rollPrice:80000,
+        rollWeight:1000,
+        usedGrams:120,
+        printHours:6,
+        printerPower:95,
+        kwhPrice:1000,
+        machineHour:1000,
+        extras:1000,
+        targetProfit:350000,
+        customMargin:0,
+        roundTo:500
+      };
+      for (const [id,val] of Object.entries(defaults)){
+        document.getElementById(id).value = val;
+      }
+      calculate();
+    }
+
+    ids.forEach(id => document.getElementById(id).addEventListener('input', calculate));
+    calculate();
+  </script>
+</body>
+</html>
